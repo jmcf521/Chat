@@ -62,8 +62,9 @@ int server() {
     while (true) {
         valread = recv(new_socket, buffer, 1024, 0);
         printf("Friend: %s\n", buffer);
-        char userMessage[1000];
+        char userMessage[1000] = {0};
         printf("You: ");
+        userMessage[0] = 0;
         scanf("%s", userMessage);
         int msgLength = strlen(userMessage);
         while (msgLength > 140) {
@@ -83,7 +84,7 @@ int server() {
     return 0;
 }
 
-int client(const char *ip) {
+int client(const char *ip, const int portNum) {
     printf("Connecting to server...\n");
     int sock = 0, valread, client_fd;
     struct sockaddr_in serv_addr;
@@ -95,7 +96,7 @@ int client(const char *ip) {
     }
 
     serv_addr.sin_family = AF_INET;
-    serv_addr.sin_port = htons(PORT);
+    serv_addr.sin_port = htons(portNum);
 
     // Load in correct address
     if (inet_pton(AF_INET, ip, &serv_addr.sin_addr) <= 0) {
@@ -180,7 +181,7 @@ int main(int argc, char *argv[]) {
             return 0;
         }
         
-        client(ipAddr);
+        client(ipAddr, portNum);
     }
     return 0;
 }
